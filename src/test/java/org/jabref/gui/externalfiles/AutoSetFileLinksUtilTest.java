@@ -52,13 +52,31 @@ public class AutoSetFileLinksUtilTest {
         AutoSetFileLinksUtil util = new AutoSetFileLinksUtil(databaseContext, fileDirPrefs, autoLinkPrefs, externalFileTypes);
         List<LinkedFile> actual = util.findAssociatedNotLinkedFiles(entry);
         assertEquals(expected, actual);
+   
     }
-
+    
+    @Test
+    public void testFindAssociatedIsLinkedFilesSuccess() throws Exception {
+        when(databaseContext.getFileDirectories(isNotNull())).thenReturn(Collections.singletonList(path.getParent()));
+        List<LinkedFile> expected = Collections.singletonList(new LinkedFile("", Path.of("CiteKey.pdf"), ""));
+        AutoSetFileLinksUtil util = new AutoSetFileLinksUtil(databaseContext, fileDirPrefs, autoLinkPrefs, externalFileTypes);
+        List<LinkedFile> NULL = util.findAssociatedNotLinkedFiles(entry);
+        assertEquals(expected, NULL);
+    }
+    
     @Test
     public void testFindAssociatedNotLinkedFilesForEmptySearchDir() throws Exception {
         when(fileDirPrefs.shouldStoreFilesRelativeToBib()).thenReturn(false);
         AutoSetFileLinksUtil util = new AutoSetFileLinksUtil(databaseContext, fileDirPrefs, autoLinkPrefs, externalFileTypes);
         List<LinkedFile> actual = util.findAssociatedNotLinkedFiles(entry);
         assertEquals(Collections.emptyList(), actual);
+    }
+    
+    @Test
+    public void testFindAssociatedIsLinkedFilesForEmptySearchDir() throws Exception {
+        when(fileDirPrefs.shouldStoreFilesRelativeToBib()).thenReturn(true);
+        AutoSetFileLinksUtil util = new AutoSetFileLinksUtil(databaseContext, fileDirPrefs, autoLinkPrefs, externalFileTypes);
+        List<LinkedFile> NULL = util.findAssociatedNotLinkedFiles(entry);
+        assertEquals(Collections.emptyList(), NULL);
     }
 }
